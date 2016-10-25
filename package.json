@@ -1,7 +1,7 @@
 {
   "name": "postcss-random",
   "version": "1.0.0",
-  "description": "PostCSS plugin to generate a random number",
+  "description": "PostCSS plugin to generate random seeds using `random()` function",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
