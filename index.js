@@ -20,17 +20,18 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		    return min + rnd * (max - min);
 		}
 
-		function floatedRandomSeed(){
+		function getLimitValues(){
 			minVal = parseInt( formattedValues[ 0 ] );
 			maxVal = parseInt( formattedValues[ 1 ] );
+		}
 
+		function floatedRandomSeed(){
+			getLimitValues();
 			newValue = seedRandom(minVal, maxVal);
 		}
 
 		function noFloatedRandomSeed(){
-			minVal = parseInt( formattedValues[ 0 ] );
-			maxVal = parseInt( formattedValues[ 1 ] );
-
+			getLimitValues();
 			newValue = Math.round(seedRandom(minVal, maxVal));
 		}
 
@@ -57,7 +58,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 					} catch ( e ) {
 						formattedValues = [];
 					}
-
 
 					switch (formattedValues.length){
 						case 0:
