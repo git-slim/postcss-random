@@ -10,5 +10,5 @@ $ npm install postcss-random
 
 Further Documentation will be added soon.
 
-## [License](LICENSE)
-## [Changelog](CHANGELOG.md)
+## [License](https://github.com/git-slim/postcss-random/blob/develop/LICENSE)
+## [Changelog](https://github.com/git-slim/postcss-random/blob/develop/CHANGELOG.md)
