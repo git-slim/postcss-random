@@ -6,3 +6,4 @@ This plugin is still under construction and have not been published yet.
 
 
 ## [License](LICENSE)
+## [Changelog](CHANGELOG.md)
