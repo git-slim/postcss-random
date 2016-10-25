@@ -1,9 +1,8 @@
-# Ignore everything
+# Ignore
 *
 
-# But not these files...
+# Don't ignore
 !.gitignore
 !README.md
-!node_modules/postcss-random/
 
 # ...even if they are in subdirectories
