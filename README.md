@@ -2,8 +2,13 @@
 
 > [PostCSS](https://github.com/postcss/postcss) plugin to generate random seeds using `random()` function.
 
-This plugin is still under construction and have not been published yet.
+## Installation
 
+```console
+$ npm install postcss-random
+```
+
+Further Documentation will be added soon.
 
 ## [License](LICENSE)
 ## [Changelog](CHANGELOG.md)
