@@ -1,4 +1,4 @@
-# postcss-random [![Build Status](https://travis-ci.org/postcss/postcss-calc.png)](https://travis-ci.org/postcss/postcss-calc)
+# postcss-random
 
 > [PostCSS](https://github.com/postcss/postcss) plugin to generate random seeds `random()`.
 
