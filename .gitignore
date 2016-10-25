@@ -1,9 +1,9 @@
-node_modules/
-bower_components/
-*.log
+# Ignore everything
+*
 
-build/
-dist/
-gulpfile.js
-package.json
-src/
+# But not these files...
+!.gitignore
+!README.md
+!node_modules/postcss-random/
+
+# ...even if they are in subdirectories
