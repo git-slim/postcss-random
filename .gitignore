@@ -4,5 +4,7 @@
 # Don't ignore
 !.gitignore
 !README.md
+!index.js
+!package.json
 
 # ...even if they are in subdirectories
