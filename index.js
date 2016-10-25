@@ -1,43 +1,93 @@
-var postcss = require('postcss');
+var postcss = require( 'postcss' );
 
-module.exports = postcss.plugin('postcss-random', function (options) {
+module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
-    return function (css) {
+	return function ( css ) {
 
-        options = options || {};
+		options = options || {};
 
-        css.walkRules(function (rule) {
+		var randomSeed = 0,
+			minVal,
+			maxVal;
 
-		    rule.walkDecls(function (decl, i) {
+		function seedRandom(max, min) {
+		    max = max || 1;
+		    min = min || 0;
 
-		 		var value = decl.value,
-		 			newValue = null;
+		    randomSeed = (randomSeed * 9301 + 49297) % 233280;
+		    var rnd = randomSeed / 233280;
 
-				if (value.indexOf( 'random(' ) !== -1) {
-				    var values = value.match(/random\(([^)]+)\)/)[1].split(',');
+		    return min + rnd * (max - min);
+		}
 
-				    if(values.length === 0){
-				    	// if no argument provided
-				    	newValue = Math.random();
-				    }else if(values.length === 2){
-				    	// if min and max value provided
-				    	var minVal = parseInt(values[0]);
-				    	var maxVal = parseInt(values[1]);
+		function floatedRandomSeed(){
+			minVal = parseInt( formattedValues[ 0 ] );
+			maxVal = parseInt( formattedValues[ 1 ] );
 
-				    	newValue = Math.floor((Math.random() * maxVal) + minVal);
-				    }else{
-				    	// if invalid count of arguments is provided
-				    	console.log('postcss-random requires a total count of 0 or two arguments');
-				    }
+			newValue = seedRandom(minVal, maxVal);
+		}
 
-				    // add new value
-				    decl.value = decl.value.replace("random(" + minVal + "," + maxVal + ")",newValue);
+		function noFloatedRandomSeed(){
+			minVal = parseInt( formattedValues[ 0 ] );
+			maxVal = parseInt( formattedValues[ 1 ] );
+
+			newValue = Math.round(seedRandom(minVal, maxVal));
+		}
+
+		css.walkRules( function ( rule ) {
+
+			rule.walkDecls( function ( decl, i ) {
+
+				// variables
+				var property = decl.prop;
+					value = decl.value,
+					formattedValues = [],
+					newValue = null;
+
+				// define randomSeed
+				if(property === 'randomSeed'){
+					randomSeed = value;
+					decl.remove();
 				}
 
-		    });
+				if ( value.indexOf( 'random(' ) !== -1 ) {
 
-		});
+					try {
+						formattedValues = value.match( /random\(([^)]+)\)/ )[ 1 ].split( ',' );
+					} catch ( e ) {
+						formattedValues = [];
+					}
 
-    }
 
-});
+					switch (formattedValues.length){
+						case 0:
+							newValue = seedRandom();
+							decl.value = decl.value.replace( "random()", newValue );
+							break;
+						case 1:
+							console.log( 'postcss-random requires a total count of 0 or two arguments' );
+							break;
+						case 2:
+							floatedRandomSeed();
+							decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + ")", newValue );
+							break;
+						case 3:
+							eval('var randomOptions='+formattedValues[2]);
+							if(randomOptions.float === true){
+								floatedRandomSeed();
+								decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + "," + formattedValues[2] + ")", newValue );
+							}else{
+								noFloatedRandomSeed();
+								decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + "," + formattedValues[2] + ")", newValue );
+							}
+							break;
+						default:
+							console.log( 'postcss-random requires a total count of 0 or two arguments' );
+							break;
+					}
+				}
+
+			} );
+		} );
+	}
+} );
