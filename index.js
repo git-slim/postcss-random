@@ -8,9 +8,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 		options = options || {};
 
-		// initial random seed
-		var randomSeed = 0;
-
 		// MIN and MAX values
 		var limitValues;
 
@@ -40,9 +37,10 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			};
 
 			randomOptions = {
-				round : false,
-				noSeed : false,
-				floatingPoint : 5,
+				randomSeed : options['randomSeed'] || 0,
+				round : options['round'] || false,
+				noSeed : options['noSeed'] || false,
+				floatingPoint : options['floatingPoint'] || 5,
 			};
 		}
 
@@ -81,8 +79,8 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			max = max || 1;
 			min = min || 0;
 
-			randomSeed = ( randomSeed * 9301 + 49297 ) % 233280;
-			var rnd = randomSeed / 233280;
+			randomOptions.randomSeed = ( randomOptions.randomSeed * 9301 + 49297 ) % 233280;
+			var rnd = randomOptions.randomSeed / 233280;
 
 			return min + rnd * ( max - min );
 		}
@@ -112,7 +110,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			// correct invalif floating point values
 			if( randomOptions.floatingPoint < 0 || isNaN(randomOptions.floatingPoint) ){
 				console.warn( warnings.invalidFloatingPoint, randomOptions.floatingPoint );
-				randomOptions.floatingPoint = 0;
+				return;
 			}
 		}
 
