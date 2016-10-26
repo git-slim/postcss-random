@@ -10,7 +10,7 @@
 $ npm install postcss-random
 ```
 
-## Exmaples
+## Examples
 
 `Input`
 
@@ -51,17 +51,25 @@ var postcssProcessors = [
 	})
 ]
 ```
-- **`randomSeed (Integer)`** sets initial seed
+> **randomSeed (Integer)**
 
-- **`round (Boolean)`**	if true, returns an integer
+sets initial seed
 
-- **`noSeed (Boolean)`** if true, the returned value will be seed-independent and recalculated with each compilation
+> **round (Boolean)**
 
-- **`floatingPoint (Integer)`** sets the number of digits after decimal point
+if true, returns an integer
+
+> **noSeed (Boolean)**
+
+if true, the returned value will be seed-independent and recalculated with each compilation
+
+> **floatingPoint (Integer)**
+
+sets the number of digits after decimal point
 
 ## Inline-Options
 
-`Input (noSeed : false)`
+`Input`
 
 ```css
 *{
