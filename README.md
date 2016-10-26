@@ -51,21 +51,21 @@ var postcssProcessors = [
 	})
 ]
 ```
-> **randomSeed (Integer)**
+**randomSeed (Integer)**
 
-sets initial seed
+> sets initial seed
 
-> **round (Boolean)**
+**round (Boolean)**
 
-if true, returns an integer
+> if true, returns an integer
 
-> **noSeed (Boolean)**
+**noSeed (Boolean)**
 
-if true, the returned value will be seed-independent and recalculated with each compilation
+> if true, the returned value will be seed-independent and recalculated with each compilation
 
-> **floatingPoint (Integer)**
+**floatingPoint (Integer)**
 
-sets the number of digits after decimal point
+> sets the number of digits after decimal point
 
 ## Inline-Options
 
