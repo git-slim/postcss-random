@@ -3,9 +3,6 @@
   "version": "1.0.2",
   "description": "PostCSS plugin to generate random seeds using `random()` function",
   "main": "index.js",
-  "scripts": {
-    "test": "eslint"
-  },
   "author": "Slim Interactive GmbH",
   "license": "MIT",
   "dependencies": {
