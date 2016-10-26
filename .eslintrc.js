@@ -4,6 +4,10 @@ module.exports = {
     },
     "extends": "eslint:recommended",
     "rules": {
+        "comma-dangle": [
+            "warn",
+            "always-multiline"
+        ],
         "indent": [
             "error",
             "tab"
