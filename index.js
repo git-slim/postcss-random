@@ -1,6 +1,6 @@
-var postcss = require( "postcss" );
+var postcss = require( 'postcss' );
 
-module.exports = postcss.plugin( "postcss-random", function ( options ) {
+module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 	return function ( css ) {
 
@@ -17,7 +17,7 @@ module.exports = postcss.plugin( "postcss-random", function ( options ) {
 
 		/*----------  message for invalid count of given arguments  ----------*/
 
-		var warningTxt = "postcss-random requires a total count of 0 or two arguments";
+		var warningTxt = 'postcss-random requires a total count of 0 or two arguments';
 
 		/*----------  global functions  ----------*/
 
@@ -56,15 +56,15 @@ module.exports = postcss.plugin( "postcss-random", function ( options ) {
 				var property = decl.prop,
 					value = decl.value;
 
-				if ( property === "randomSeed" ) {
+				if ( property === 'randomSeed' ) {
 					randomSeed = value;
 					decl.remove();
 				}
 
-				if ( value.indexOf( "random(" ) !== -1 ) {
+				if ( value.indexOf( 'random(' ) !== -1 ) {
 
 					try {
-						formattedValues = value.match( /random\(([^)]+)\)/ )[ 1 ].split( "," );
+						formattedValues = value.match( /random\(([^)]+)\)/ )[ 1 ].split( ',' );
 					} catch ( e ) {
 						formattedValues = [];
 					}
@@ -73,7 +73,7 @@ module.exports = postcss.plugin( "postcss-random", function ( options ) {
 
 					case 0:
 						newValue = seedRandom();
-						decl.value = decl.value.replace( "random()", newValue );
+						decl.value = decl.value.replace( 'random()', newValue );
 						break;
 
 					case 1:
@@ -82,17 +82,17 @@ module.exports = postcss.plugin( "postcss-random", function ( options ) {
 
 					case 2:
 						floatedRandomSeed();
-						decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + ")", newValue );
+						decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ')', newValue );
 						break;
 
 					case 3:
-						eval( "randomOptions =" + formattedValues[ 2 ] );
+						eval( 'randomOptions =' + formattedValues[ 2 ] );
 						if ( randomOptions.float === true ) {
 							floatedRandomSeed();
-							decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + "," + formattedValues[ 2 ] + ")", newValue );
+							decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ',' + formattedValues[ 2 ] + ')', newValue );
 						} else {
 							noFloatedRandomSeed();
-							decl.value = decl.value.replace( "random(" + minVal + "," + maxVal + "," + formattedValues[ 2 ] + ")", newValue );
+							decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ',' + formattedValues[ 2 ] + ')', newValue );
 						}
 						break;
 
