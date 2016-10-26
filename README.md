@@ -1,6 +1,6 @@
 # postcss-random
 
-> [PostCSS](https://github.com/postcss/postcss) plugin to generate random seeds using `random()` function.
+> [PostCSS](https://github.com/postcss/postcss) plugin to generate random numbers based on Random seed using `random()` function.
 
 ## Installation
 
