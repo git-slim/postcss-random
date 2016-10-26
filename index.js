@@ -20,7 +20,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		// arguments passed to random()
 		var funcArguments;
 
-		// finale value which replace the random() function
+		// final value which replace the random() function
 		var newValue = 0;
 
 		// options passed as the third argument
@@ -29,9 +29,9 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		};
 
 		//  message for invalid count of given arguments
-		var warningTxt = 'postcss-random requires a total count of 0 or two arguments';
+		var warningTxt = 'postcss-random requires a total count of 0, 2 or 3 arguments';
 
-		// global functions
+		/*----------  global functions  ----------*/
 
 		// return seeded random
 		function seedRandom( max, min ) {
@@ -122,7 +122,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						break;
 					}
 
-					// finaly replace value with new value
+					// finally replace value with new value
 					decl.value = decl.value.replace( /random\(.*\)/, newValue );
 				}
 
