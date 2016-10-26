@@ -38,9 +38,9 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 			randomOptions = {
 				randomSeed : options['randomSeed'] || 0,
-				round : options['round'] || false,
-				noSeed : options['noSeed'] || false,
-				floatingPoint : options['floatingPoint'] || 5,
+				round : Boolean(options['round']) || false,
+				noSeed : Boolean(options['noSeed']) || false,
+				floatingPoint : parseInt(options['floatingPoint']) || 5,
 			};
 		}
 
@@ -100,6 +100,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 				eval( 'customOptions =' + argument );
 			}catch( e ){
 				console.warn( warnings.invalidOptionsFormat, argument );
+				return;
 			}
 
 			// apply custom options to random options
@@ -126,7 +127,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 				// if randomSeed property found, set random seed and return
 				if ( property === 'randomSeed' ) {
-					randomSeed = value;
+					randomOptions.randomSeed = value;
 					decl.remove();
 					return;
 				}
@@ -176,6 +177,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						setOptions( funcArguments[ 0 ] );
 						if( typeof randomOptions !== 'object' ){
 							console.warn( warnings.invalidOptionsFormat, randomOptions );
+							return;
 						}else{
 							newValue = getRandom();
 						}
@@ -193,7 +195,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 					default:
 						console.warn( warnings.invalidArguments );
-						break;
+						return;
 					}
 
 					// finally replace value with new value
