@@ -8,19 +8,32 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 		options = options || {};
 
-		var randomSeed = 0,
-			minVal,
-			maxVal,
-			formattedValues,
-			newValue,
-			randomOptions;
+		// initial random seed
+		var randomSeed = 0;
 
-		/*----------  message for invalid count of given arguments  ----------*/
+		// MIN and MAX values
+		var limitValues = {
+			min : 0,
+			max : 1,
+		};
 
+		// arguments passed to random()
+		var funcArguments;
+
+		// finale value which replace the random() function
+		var newValue = 0;
+
+		// options passed as the third argument
+		var randomOptions = {
+			round : false
+		};
+
+		//  message for invalid count of given arguments
 		var warningTxt = 'postcss-random requires a total count of 0 or two arguments';
 
-		/*----------  global functions  ----------*/
+		// global functions
 
+		// return seeded random
 		function seedRandom( max, min ) {
 			max = max || 1;
 			min = min || 0;
@@ -31,49 +44,59 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			return min + rnd * ( max - min );
 		}
 
-		function getLimitValues() {
-			minVal = parseInt( formattedValues[ 0 ] );
-			maxVal = parseInt( formattedValues[ 1 ] );
+		// update limits
+		function setLimitValues() {
+			limitValues.min = parseInt( funcArguments[ 0 ] || 0 );
+			limitValues.max = parseInt( funcArguments[ 1 ] || 1 );
 		}
 
-		function floatedRandomSeed() {
-			getLimitValues();
-			newValue = seedRandom( minVal, maxVal );
+		// get random number within range
+		function getSeededRandom() {
+			setLimitValues();
+			return seedRandom( limitValues.min, limitValues.max );
 		}
 
-		function noFloatedRandomSeed() {
-			getLimitValues();
-			newValue = Math.round( seedRandom( minVal, maxVal ) );
+		// get random int wihtin range (rounded float)
+		function getRoundedSeededRandom() {
+			return Math.round( getSeededRandom() );
 		}
 
-		/*----------  walk rules  ----------*/
+		// set random options
+		function setOptions( argument){
+			eval( 'randomOptions =' + argument );
+		}
 
-
+		// walk rules
 		css.walkRules( function ( rule ) {
 
 			rule.walkDecls( function ( decl ) {
 
-				var property = decl.prop,
-					value = decl.value;
+				var property = decl.prop;
+				var value = decl.value;
 
 				if ( property === 'randomSeed' ) {
 					randomSeed = value;
 					decl.remove();
+					return;
 				}
 
 				if ( value.indexOf( 'random(' ) !== -1 ) {
 
+					// remove whitespace
+					value = value.replace( /\s/, '' );
+
+					// try to get arguments
 					try {
-						formattedValues = value.match( /random\(([^)]+)\)/ )[ 1 ].split( ',' );
+						funcArguments = value.match( /random\(([^)]+)\)/ )[ 1 ].split( ',' );
 					} catch ( e ) {
-						formattedValues = [];
+						funcArguments = [];
 					}
 
-					switch ( formattedValues.length ) {
+					// perform action depending on arguments count
+					switch ( funcArguments.length ) {
 
 					case 0:
 						newValue = seedRandom();
-						decl.value = decl.value.replace( 'random()', newValue );
 						break;
 
 					case 1:
@@ -81,18 +104,16 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						break;
 
 					case 2:
-						floatedRandomSeed();
-						decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ')', newValue );
+						newValue = getSeededRandom();
 						break;
 
 					case 3:
-						eval( 'randomOptions =' + formattedValues[ 2 ] );
-						if ( randomOptions.float === true ) {
-							floatedRandomSeed();
-							decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ',' + formattedValues[ 2 ] + ')', newValue );
+						setOptions( funcArguments[ 2 ] );
+
+						if ( randomOptions.round ) {
+							newValue = getRoundedSeededRandom();
 						} else {
-							noFloatedRandomSeed();
-							decl.value = decl.value.replace( 'random(' + minVal + ',' + maxVal + ',' + formattedValues[ 2 ] + ')', newValue );
+							newValue = getSeededRandom();
 						}
 						break;
 
@@ -100,6 +121,9 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						console.warn( warningTxt );
 						break;
 					}
+
+					// finaly replace value with new value
+					decl.value = decl.value.replace( /random\(.*\)/, newValue );
 				}
 
 			} );
