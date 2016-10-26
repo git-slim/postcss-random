@@ -2,6 +2,14 @@
   "name": "postcss-random",
   "version": "1.0.2",
   "description": "PostCSS plugin to generate random seeds using `random()` function",
+  "keywords": [
+  	"css",
+  	"scss",
+  	"less",
+  	"postcss",
+  	"postcss-random",
+  	"random"
+  ],
   "main": "index.js",
   "author": "Slim Interactive GmbH",
   "license": "MIT",
