@@ -12,10 +12,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		var randomSeed = 0;
 
 		// MIN and MAX values
-		var limitValues = {
-			min : 0,
-			max : 1,
-		};
+		var limitValues;
 
 		// arguments passed to random()
 		var funcArguments;
@@ -24,14 +21,60 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		var newValue = 0;
 
 		// options passed as the third argument
-		var randomOptions = {
-			round : false
+		var randomOptions;
+
+		//  warning messages
+		var warnings = {
+			invalidArguments : 'postcss-random requires a total count of 0, 2 or 3 arguments',
+			invalidOptionsFormat : 'Invalid options object format',
+			invalidFloatingPoint : 'Invalid floating point',
 		};
 
-		//  message for invalid count of given arguments
-		var warningTxt = 'postcss-random requires a total count of 0, 2 or 3 arguments';
-
 		/*----------  global functions  ----------*/
+
+		// set initial options for every walk
+		function setDefaultOptions(){
+			limitValues = {
+				min : 0,
+				max : 1,
+			};
+
+			randomOptions = {
+				round : false,
+				noSeed : false,
+				floatingPoint : 5,
+			};
+		}
+
+		// essential random function, returns value depending on setted randomOptions
+		function getRandom(){
+			var randomGenerator = seedRandom;
+			if( randomOptions.noSeed ){
+				randomGenerator = simpleRandom;
+			}
+
+			// get random
+			var returnValue = randomGenerator( limitValues.max, limitValues.min );
+
+			// apply floating point correction
+			returnValue = returnValue.toFixed( randomOptions.floatingPoint );
+
+			// round if necessary
+			if( randomOptions.round ){
+				returnValue = Math.round( returnValue );
+			}
+
+			return returnValue;
+		}
+
+		// return simple random value, no seeding
+		function simpleRandom( max, min ){
+			max = max || 1;
+			min = min || 0;
+			var rnd = Math.random();
+
+			return min + rnd * (max - min);
+		}
 
 		// return seeded random
 		function seedRandom( max, min ) {
@@ -50,20 +93,27 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			limitValues.max = parseInt( funcArguments[ 1 ] || 1 );
 		}
 
-		// get random number within range
-		function getSeededRandom() {
-			setLimitValues();
-			return seedRandom( limitValues.min, limitValues.max );
-		}
-
-		// get random int wihtin range (rounded float)
-		function getRoundedSeededRandom() {
-			return Math.round( getSeededRandom() );
-		}
-
 		// set random options
 		function setOptions( argument){
-			eval( 'randomOptions =' + argument );
+			var customOptions;
+
+			// parse options, warn if invalid
+			try{
+				eval( 'customOptions =' + argument );
+			}catch( e ){
+				console.warn( warnings.invalidOptionsFormat, argument );
+			}
+
+			// apply custom options to random options
+			for(var name in customOptions){
+				randomOptions[name] = customOptions[name];
+			}
+
+			// correct invalif floating point values
+			if( randomOptions.floatingPoint < 0 || isNaN(randomOptions.floatingPoint) ){
+				console.warn( warnings.invalidFloatingPoint, randomOptions.floatingPoint );
+				randomOptions.floatingPoint = 0;
+			}
 		}
 
 		// walk rules
@@ -71,9 +121,12 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 			rule.walkDecls( function ( decl ) {
 
+				setDefaultOptions();
+
 				var property = decl.prop;
 				var value = decl.value;
 
+				// if randomSeed property found, set random seed and return
 				if ( property === 'randomSeed' ) {
 					randomSeed = value;
 					decl.remove();
@@ -87,9 +140,31 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 					// try to get arguments
 					try {
-						funcArguments = value.match( /random\(([^)]+)\)/ )[ 1 ].split( ',' );
+						// first we get the whole random command
+						var commandString = value.match( /random\(([^)]+)\)/ )[ 1 ];
+						// seccond we replace the part ,{ with a bar
+						var objectTemp = commandString.replace(/,\s*{/,'|');
+						// third we split it in half to seperate min/max and options
+						var segmentSplit = objectTemp.split('|');
+						// if length > 2 then there is something wrong
+						if( segmentSplit.length > 2){
+							console.warn( warnings.invalidOptionsFormat, commandString );
+							return;
+						}else if( segmentSplit.length === 2){
+							// otherwise split out min/max
+							var minMaxSegment = segmentSplit[0];
+							funcArguments = minMaxSegment.split( ',' );
+							funcArguments.push( '{' + segmentSplit[1] );
+						}else{
+							// and of only one argument exists then it means taht only options were passed
+							funcArguments = segmentSplit;
+						}
 					} catch ( e ) {
 						funcArguments = [];
+					}
+
+					if( funcArguments.length >= 2 ){
+						setLimitValues();
 					}
 
 					// perform action depending on arguments count
@@ -100,30 +175,31 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						break;
 
 					case 1:
-						console.warn( warningTxt );
+						setOptions( funcArguments[ 0 ] );
+						if( typeof randomOptions !== 'object' ){
+							console.warn( warnings.invalidOptionsFormat, randomOptions );
+						}else{
+							newValue = getRandom();
+						}
 						break;
 
 					case 2:
-						newValue = getSeededRandom();
+						newValue = getRandom();
 						break;
 
 					case 3:
 						setOptions( funcArguments[ 2 ] );
+						newValue = getRandom();
 
-						if ( randomOptions.round ) {
-							newValue = getRoundedSeededRandom();
-						} else {
-							newValue = getSeededRandom();
-						}
 						break;
 
 					default:
-						console.warn( warningTxt );
+						console.warn( warnings.invalidArguments );
 						break;
 					}
 
 					// finally replace value with new value
-					decl.value = decl.value.replace( /random\(.*\)/, newValue );
+					decl.value = decl.value.replace( /random\(([^)]*)\)/, newValue );
 				}
 
 			} );
