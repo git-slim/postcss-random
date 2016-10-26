@@ -1,6 +1,6 @@
 # postcss-random
 
-> [PostCSS](https://github.com/postcss/postcss) plugin to generate random numbers based on Random seed using `random()` function.
+> [PostCSS][![Build Status](https://travis-ci.org/git-slim/postcss-random.svg?branch=develop)](https://travis-ci.org/git-slim/postcss-random)(https://github.com/postcss/postcss) plugin to generate random numbers based on Random seed using `random()` function.
 
 ## Installation
 
