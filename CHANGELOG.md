@@ -1,3 +1,10 @@
+## 1.0.4 - 2016-10-26
+Bugfix:
+- fixed random seed
+
+Minor Changes:
+- return after error while parsing
+
 ## 1.0.3 - 2016-10-26
 
 Major Features:
