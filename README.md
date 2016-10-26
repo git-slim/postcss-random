@@ -107,11 +107,11 @@ var postcssProcessors = [
 	transform: translateX(6.12345%);
 }
 ```
-
+## [License](https://github.com/git-slim/postcss-random/blob/develop/LICENSE)
+## [Changelog](https://github.com/git-slim/postcss-random/blob/develop/CHANGELOG.md)
 ## Contributors
 
 * [Paul Kamma](https://github.com/X-Tender)
 * [Marten Zander](https://github.com/SlimMarten)
 
-### [License](https://github.com/git-slim/postcss-random/blob/develop/LICENSE)
-### [Changelog](https://github.com/git-slim/postcss-random/blob/develop/CHANGELOG.md)
+
