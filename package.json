@@ -1,6 +1,6 @@
 {
   "name": "postcss-random",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "PostCSS plugin to generate random seeds using `random()` function",
   "keywords": [
   	"css",

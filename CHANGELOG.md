@@ -1,3 +1,7 @@
+## 1.0.5 - 2016-10-27
+Bugfix:
+- fixed ignored randomSeed property
+
 ## 1.0.4 - 2016-10-26
 Bugfix:
 - fixed random seed

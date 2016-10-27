@@ -9,7 +9,10 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		options = options || {};
 
 		// MIN and MAX values
-		var limitValues;
+		var limitValues = {
+			min : 0,
+			max : 1,
+		};
 
 		// arguments passed to random()
 		var funcArguments;
@@ -18,7 +21,12 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		var newValue = 0;
 
 		// options passed as the third argument
-		var randomOptions;
+		var randomOptions = {
+			randomSeed : options['randomSeed'] || 0,
+			round : Boolean(options['round']) || false,
+			noSeed : Boolean(options['noSeed']) || false,
+			floatingPoint : parseInt(options['floatingPoint']) || 5,
+		};
 
 		//  warning messages
 		var warnings = {
@@ -28,21 +36,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		};
 
 		/*----------  global functions  ----------*/
-
-		// set initial options for every walk
-		function setDefaultOptions(){
-			limitValues = {
-				min : 0,
-				max : 1,
-			};
-
-			randomOptions = {
-				randomSeed : options['randomSeed'] || 0,
-				round : Boolean(options['round']) || false,
-				noSeed : Boolean(options['noSeed']) || false,
-				floatingPoint : parseInt(options['floatingPoint']) || 5,
-			};
-		}
 
 		// essential random function, returns value depending on setted randomOptions
 		function getRandom(){
@@ -119,8 +112,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		css.walkRules( function ( rule ) {
 
 			rule.walkDecls( function ( decl ) {
-
-				setDefaultOptions();
 
 				var property = decl.prop;
 				var value = decl.value;
