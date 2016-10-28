@@ -1,4 +1,4 @@
-## 1.0.6 - 2016-10-28
+## 1.0.7 - 2016-10-28
 Bugfix:
 - removed default randomSeed
 

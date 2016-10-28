@@ -22,7 +22,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 		// options passed as the third argument
 		var randomOptions = {
-			randomSeed : options['randomSeed'] || {},
+			randomSeed : options['randomSeed'] || null,
 			round : Boolean(options['round']) || false,
 			noSeed : Boolean(options['noSeed']) || false,
 			floatingPoint : parseInt(options['floatingPoint']) || 5,
