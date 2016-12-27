@@ -167,10 +167,11 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 								funcArguments = segmentSplit;
 							}
 
+							// set limits
 							if( funcArguments.length >= 2 ){
 								setLimitValues();
 							}
-							console.log(funcArguments);
+
 							// perform action depending on arguments count
 							switch ( funcArguments.length ) {
 
