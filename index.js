@@ -131,66 +131,73 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 					// try to get arguments
 					try {
 						// first we get the whole random command
-						var commandString = value.match( /random\(([^)]+)\)/ )[ 1 ];
-						// seccond we replace the part ,{ with a bar
-						var objectTemp = commandString.replace(/,\s*{/,'|');
-						// third we split it in half to seperate min/max and options
-						var segmentSplit = objectTemp.split('|');
-						// if length > 2 then there is something wrong
-						if( segmentSplit.length > 2){
-							console.warn( warnings.invalidOptionsFormat, commandString );
-							return;
-						}else if( segmentSplit.length === 2){
-							// otherwise split out min/max
-							var minMaxSegment = segmentSplit[0];
-							funcArguments = minMaxSegment.split( ',' );
-							funcArguments.push( '{' + segmentSplit[1] );
-						}else{
-							// and of only one argument exists then it means taht only options were passed
-							funcArguments = segmentSplit;
+						var commands = value.match( /random\(([^)]+)\)/g );
+						// loop over each command instance
+						for(var i = 0; i < commands.length; i++){
+							// current command
+							var curCommand = commands[i];
+							// command inner
+							var commandInner = curCommand.match( /random\(([^)]+)\)/ )[ 1 ];
+							// seccond we replace the part ,{ with a bar
+							var objectTemp = commandInner.replace(/,\s*{/,'|');
+							// third we split it in half to seperate min/max and options
+							var segmentSplit = objectTemp.split('|');
+							// if length > 2 then there is something wrong
+							if( segmentSplit.length > 2){
+								console.warn( warnings.invalidOptionsFormat, commandInner );
+								return;
+							}else if( segmentSplit.length === 2){
+								// otherwise split out min/max
+								var minMaxSegment = segmentSplit[0];
+								funcArguments = minMaxSegment.split( ',' );
+								funcArguments.push( '{' + segmentSplit[1] );
+							}else{
+								// and of only one argument exists then it means taht only options were passed
+								funcArguments = segmentSplit;
+							}
+
+							if( funcArguments.length >= 2 ){
+								setLimitValues();
+							}
+							console.log(funcArguments);
+							// perform action depending on arguments count
+							switch ( funcArguments.length ) {
+
+							case 0:
+								newValue = seedRandom();
+								break;
+
+							case 1:
+								setOptions( funcArguments[ 0 ] );
+								if( typeof randomOptions !== 'object' ){
+									console.warn( warnings.invalidOptionsFormat, randomOptions );
+									return;
+								}else{
+									newValue = getRandom();
+								}
+								break;
+
+							case 2:
+								newValue = getRandom();
+								break;
+
+							case 3:
+								setOptions( funcArguments[ 2 ] );
+								newValue = getRandom();
+
+								break;
+
+							default:
+								console.warn( warnings.invalidArguments );
+								return;
+							}
+
+							// finally replace value with new value
+							decl.value = decl.value.replace( /random\(([^)]*)\)/, newValue );
 						}
 					} catch ( e ) {
 						funcArguments = [];
 					}
-
-					if( funcArguments.length >= 2 ){
-						setLimitValues();
-					}
-
-					// perform action depending on arguments count
-					switch ( funcArguments.length ) {
-
-					case 0:
-						newValue = seedRandom();
-						break;
-
-					case 1:
-						setOptions( funcArguments[ 0 ] );
-						if( typeof randomOptions !== 'object' ){
-							console.warn( warnings.invalidOptionsFormat, randomOptions );
-							return;
-						}else{
-							newValue = getRandom();
-						}
-						break;
-
-					case 2:
-						newValue = getRandom();
-						break;
-
-					case 3:
-						setOptions( funcArguments[ 2 ] );
-						newValue = getRandom();
-
-						break;
-
-					default:
-						console.warn( warnings.invalidArguments );
-						return;
-					}
-
-					// finally replace value with new value
-					decl.value = decl.value.replace( /random\(([^)]*)\)/, newValue );
 				}
 
 			} );
