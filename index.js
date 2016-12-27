@@ -36,6 +36,14 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		};
 
 		/*----------  global functions  ----------*/
+		function setDefaultRandomOptions(){
+			randomOptions = {
+				randomSeed : options['randomSeed'] || null,
+				round : Boolean(options['round']) || false,
+				noSeed : Boolean(options['noSeed']) || false,
+				floatingPoint : parseInt(options['floatingPoint']) || 5,
+			};
+		}
 
 		// essential random function, returns value depending on setted randomOptions
 		function getRandom(){
@@ -87,6 +95,9 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		// set random options
 		function setOptions( argument){
 			var customOptions;
+
+			// reset randomOptions to default
+			setDefaultRandomOptions();
 
 			// parse options, warn if invalid
 			try{
