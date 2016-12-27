@@ -62,7 +62,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			if( randomOptions.round ){
 				returnValue = Math.round( returnValue );
 			}
-
 			return returnValue;
 		}
 
@@ -147,6 +146,8 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 						for(var i = 0; i < commands.length; i++){
 							// current command
 							var curCommand = commands[i];
+							// minMaxSegment
+							var minMaxSegment = [];
 							// command inner
 							var commandInner = curCommand.match( /random\(([^)]+)\)/ )[ 1 ];
 							// seccond we replace the part ,{ with a bar
@@ -158,13 +159,14 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 								console.warn( warnings.invalidOptionsFormat, commandInner );
 								return;
 							}else if( segmentSplit.length === 2){
-								// otherwise split out min/max
-								var minMaxSegment = segmentSplit[0];
+								// set funcArguments based on min & max values as well as options
+								minMaxSegment = segmentSplit[0];
 								funcArguments = minMaxSegment.split( ',' );
 								funcArguments.push( '{' + segmentSplit[1] );
 							}else{
-								// and of only one argument exists then it means taht only options were passed
-								funcArguments = segmentSplit;
+								// set funcArguments based on min & max values
+								minMaxSegment = segmentSplit[0];
+								funcArguments = minMaxSegment.split( ',' );
 							}
 
 							// set limits
@@ -190,6 +192,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 								break;
 
 							case 2:
+								setDefaultRandomOptions();
 								newValue = getRandom();
 								break;
 
@@ -203,12 +206,11 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 								console.warn( warnings.invalidArguments );
 								return;
 							}
-
 							// finally replace value with new value
 							decl.value = decl.value.replace( /random\(([^)]*)\)/, newValue );
 						}
 					} catch ( e ) {
-						funcArguments = [];
+						console.warn(e);
 					}
 				}
 
