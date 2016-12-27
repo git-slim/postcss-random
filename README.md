@@ -1,4 +1,12 @@
-# postcss-random [![Build Status](https://travis-ci.org/git-slim/postcss-random.svg?branch=develop)](https://travis-ci.org/git-slim/postcss-random)
+# postcss-random
+<!-- badge -->
+[![travis status](https://img.shields.io/travis/git-slim/postcss-random.svg)](https://travis-ci.org/git-slim/postcss-random)
+[![npm version](https://img.shields.io/npm/v/postcss-random.svg)](https://www.npmjs.com/package/postcss-random)
+[![npm download](https://img.shields.io/npm/dm/postcss-random.svg)](https://www.npmjs.com/package/postcss-random)
+[![npm download](https://img.shields.io/npm/dt/postcss-random.svg)](https://www.npmjs.com/package/postcss-random)
+[![GitHub stars](https://img.shields.io/github/stars/git-slim/postcss-random.svg?style=social&label=Star)](https://github.com/git-slim/postcss-random)
+[![GitHub issues](https://img.shields.io/github/issues/git-slim/postcss-random.svg)](https://github.com/git-slim/postcss-random/issues)
+<!-- endbadge -->
 
 > [PostCSS](https://github.com/postcss/postcss) plugin to generate random numbers based on random seeds using `random()` function.
 
