@@ -1,3 +1,12 @@
+## 1.0.8 – 2016-12-28
+✨ Second release v1.0.8
+Bugfix:
+- **`random()`** method can now be called multiple times within a single property
+
+Minor Changes:
+- added comments here and there
+- added several badges to readme.md
+
 ## 1.0.7 - 2016-10-28
 Bugfix:
 - removed default randomSeed
