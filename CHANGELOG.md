@@ -1,3 +1,7 @@
+## 1.0.9 – 2016-12-29
+Minor Changes:
+- plugin now works properly in for-loop using [postcss-for](https://github.com/antyakushev/postcss-for)
+
 ## 1.0.8 – 2016-12-28
 ✨ Second release v1.0.8
 Bugfix:
