@@ -37,12 +37,9 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 		/*----------  global functions  ----------*/
 		function setDefaultRandomOptions(){
-			randomOptions = {
-				randomSeed : options['randomSeed'] || null,
-				round : Boolean(options['round']) || false,
-				noSeed : Boolean(options['noSeed']) || false,
-				floatingPoint : parseInt(options['floatingPoint']) || 5,
-			};
+			randomOptions.round = Boolean(options['round']) || false;
+			randomOptions.noSeed = Boolean(options['noSeed']) || false;
+			randomOptions.floatingPoint = parseInt(options['floatingPoint']) || 5;
 		}
 
 		// essential random function, returns value depending on setted randomOptions
@@ -51,7 +48,6 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 			if( randomOptions.noSeed ){
 				randomGenerator = simpleRandom;
 			}
-
 			// get random
 			var returnValue = randomGenerator( limitValues.max, limitValues.min );
 
@@ -92,12 +88,8 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 		}
 
 		// set random options
-		function setOptions( argument){
+		function setOptions( argument ){
 			var customOptions;
-
-			// reset randomOptions to default
-			setDefaultRandomOptions();
-
 			// parse options, warn if invalid
 			try{
 				eval( 'customOptions =' + argument );
@@ -120,28 +112,25 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 
 		// walk rules
 		css.walkRules( function ( rule ) {
-
+			// walk declarations
 			rule.walkDecls( function ( decl ) {
-
+				// reset default options
+				setDefaultRandomOptions();
 				var property = decl.prop;
 				var value = decl.value;
-
 				// if randomSeed property found, set random seed and return
 				if ( property === 'randomSeed' ) {
 					randomOptions.randomSeed = value;
 					decl.remove();
 					return;
 				}
-
 				if ( value.indexOf( 'random(' ) !== -1 ) {
-
 					// remove whitespace
 					value = value.replace( /\s/, '' );
-
 					// try to get arguments
 					try {
 						// first we get the whole random command
-						var commands = value.match( /random\(([^)]+)\)/g );
+						var commands = value.match( /random\(([^)]*)\)/g );
 						// loop over each command instance
 						for(var i = 0; i < commands.length; i++){
 							// current command
@@ -149,7 +138,7 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 							// minMaxSegment
 							var minMaxSegment = [];
 							// command inner
-							var commandInner = curCommand.match( /random\(([^)]+)\)/ )[ 1 ];
+							var commandInner = curCommand.match( /random\(([^)]*)\)/ )[ 1 ];
 							// seccond we replace the part ,{ with a bar
 							var objectTemp = commandInner.replace(/,\s*{/,'|');
 							// third we split it in half to seperate min/max and options
@@ -165,22 +154,22 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 								funcArguments.push( '{' + segmentSplit[1] );
 							}else{
 								// set funcArguments based on min & max values
-								minMaxSegment = segmentSplit[0];
-								funcArguments = minMaxSegment.split( ',' );
+								if(segmentSplit[0].indexOf(',') !== -1){
+									minMaxSegment = segmentSplit[0];
+									funcArguments = minMaxSegment.split( ',' );
+								}else{
+									funcArguments = ['0','1'];
+								}
 							}
-
 							// set limits
 							if( funcArguments.length >= 2 ){
 								setLimitValues();
 							}
-
 							// perform action depending on arguments count
 							switch ( funcArguments.length ) {
-
 							case 0:
 								newValue = seedRandom();
 								break;
-
 							case 1:
 								setOptions( funcArguments[ 0 ] );
 								if( typeof randomOptions !== 'object' ){
@@ -190,18 +179,13 @@ module.exports = postcss.plugin( 'postcss-random', function ( options ) {
 									newValue = getRandom();
 								}
 								break;
-
 							case 2:
-								setDefaultRandomOptions();
 								newValue = getRandom();
 								break;
-
 							case 3:
 								setOptions( funcArguments[ 2 ] );
 								newValue = getRandom();
-
 								break;
-
 							default:
 								console.warn( warnings.invalidArguments );
 								return;
