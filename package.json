@@ -14,7 +14,7 @@
   "author": "Slim Interactive GmbH",
   "license": "MIT",
   "dependencies": {
-    "postcss": "^5.2.5"
+    "postcss": "^6.0.0"
   },
   "devDependencies": {
     "ava": "^0.18.0",
